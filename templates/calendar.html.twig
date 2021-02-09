@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang='en'>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>{% block title %}Calendar{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.css">
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.4.2/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            var eventsA=[];
+            var eventsB=[];
+            var eventsC=[];
+            let events = [];
+            document.addEventListener('DOMContentLoaded', function() {
+                {#//var specialist = {{ specialist }};#}
+                {#//console.log(specialist);#}
+                {#//#}
+                {# let specialist= {{ specialist }}; #}
+
+                if(document.getElementById("specialist").value==='Wybierz specjaliste'){
+                    sessionStorage.removeItem('specialist');
+                }
+                else {
+                    var specialist = sessionStorage.getItem("specialist");
+                    console.log(specialist);
+                }
+
+
+                let js_events = {{ events|json_encode|raw }};
+                js_events.forEach(function (js_events) {
+                    if(typeof js_events.attendees !== 'undefined')
+                    {
+                        if(js_events.attendees[0].email==="danielspraktyka@gmail.com" || js_events.attendees[1].email==="danielspraktyka@gmail.com")
+                        {
+                            eventsA.push({
+                                title: js_events.summary,
+                                start: js_events.start.dateTime,
+                                end: js_events.end.dateTime,
+                                color: 'orange',
+                            })
+                        };
+                        if(js_events.attendees[0].email==="danielspraktyka2@gmail.com" || js_events.attendees[1].email==="danielspraktyka2@gmail.com")
+                        {
+                            eventsB.push({
+                                title: js_events.summary,
+                                start: js_events.start.dateTime,
+                                end: js_events.end.dateTime,
+                                color: 'green',
+                            })
+                        };
+                        if(js_events.attendees[0].email==="danielspraktyka3@gmail.com" || js_events.attendees[1].email==="danielspraktyka3@gmail.com")
+                        {
+                            eventsC.push({
+                                title: js_events.summary,
+                                start: js_events.start.dateTime,
+                                end: js_events.end.dateTime,
+                                color: 'red',
+                            })
+                        };
+                    }
+                    // else
+                    // {
+                    //     events.push({
+                    //         title: js_events.summary,
+                    //         start: js_events.start.dateTime,
+                    //         end: js_events.end.dateTime,
+                    //         //color: 'orange',
+                    //     });
+                    // }
+
+                });
+                if(specialist==='danielspraktyka@gmail.com')
+                {
+                    events=eventsA;
+                }
+                if(specialist==='danielspraktyka2@gmail.com')
+                {
+                    events=eventsB;
+                }
+                if(specialist==='danielspraktyka3@gmail.com')
+                {
+                    events=eventsC;
+                }
+                var calendarEl = document.getElementById('calendar');
+
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    defaultView: 'dayGridMonth',
+                    locale: 'pl',
+                    editable: false,
+                    firstDay: 1,
+                    slotDuration: '01:00',
+                    slotMinTime: "10:00:00",
+                    eventTimeFormat: { // like '14:30:00'
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        //second: '2-digit',
+                        meridiem: false,
+                    },
+                    displayEventEnd: true,
+                    businessHours: {
+                        // days of week. an array of zero-based day of week integers (0=Sunday)
+                        daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
+                        startTime: '10:00', // a start time (10am in this example)
+                        endTime: '18:00', // an end time (6pm in this example)
+                    },
+                    header: {
+                        left: 'prev,next today myCustomButton Lista',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    },
+                    googleCalendarApiKey: 'AIzaSyBvc5Y3UcDZvHF8Myl3PCwFi8-xQPCTSDc',
+                    events: events,
+                    plugins: ['interaction', 'dayGrid', 'timeGrid'], // https://fullcalendar.io/docs/plugin-index
+                    timeZone: 'UTC',
+                    dateClick: function(info) {
+                        //alert('Clicked on: ' + info.dateStr); //wybrany dzien
+                        // change the day's background color just for fun
+                        info.dayEl.style.backgroundColor = 'red';
+                        //info.dayEl.style.backgroundColor = 'white';
+                    }
+                });
+                calendar.render();
+
+
+            });
+            function changeSpecialist() {
+                // let temp = document.querySelector('#specialist');
+                let temp = document.getElementById("specialist").value;
+                console.log(temp);
+                //document.getElementById("form").submit();
+                if(temp==="SpecjalistaA")
+                {
+                    sessionStorage.setItem("specialist", "danielspraktyka@gmail.com");
+                }
+                if(temp==="SpecjalistaB")
+                {
+                    sessionStorage.setItem("specialist", "danielspraktyka2@gmail.com");
+                }
+                if(temp==="SpecjalistaC")
+                {
+                    sessionStorage.setItem("specialist", "danielspraktyka3@gmail.com");
+                }
+
+                location.reload();
+                // events.push({
+                //     title: 'test',
+                //     start: js_events.start.dateTime,
+                //     //end: js_events.end.dateTime,
+                //     //color: 'orange',
+                //});
+            }
+
+            console.log(eventsB);
+
+            //zapamietywanie wyboru specjalisty po refreshu
+            var selectedProduct = sessionStorage.getItem("specialist");
+            if(selectedProduct != undefined || selectedProduct != null){
+                $(".ProductDetails select").first().find(":selected").removeAttr("selected");
+                $(".ProductDetails select").find("option").each(function () {
+                    if ($(this).val() == selectedProduct) {
+                        $(this).attr("selected", true);
+                    }
+                });
+            }
+
+        </script>
+    {% endblock %}
+
+</head>
+<body>
+{% block body %}
+{#    {{ dump(specialistA) }}#}
+{#    {% for event in events %}#}
+        {{ dump(events) }}
+
+{#        Start date: {{ event.start.dateTime }} <br>#}
+{#        End date: {{ event.end.dateTime }} <br><br>#}
+{#    {% endfor %}#}
+
+    <div class="form">
+        <form id="form" method="post">
+            <label for="specialist">Zarejestruj wizyte: </label>
+
+            <select id="specialist" name="specialist" onchange="changeSpecialist()">
+                <option selected="default" disabled>Wybierz specjaliste</option>
+                <option value="SpecjalistaA">Specjalista A</option>
+                <option value="SpecjalistaB">Specjalista B</option>
+                <option value="SpecjalistaC">Specjalista C</option>
+            </select>
+
+            <select id="time" name="time">
+                <option selected="default" disabled>Wybierz godzine</option>
+                <option value="10-11">10:00-11:00</option>
+                <option value="11-12">11:00-12:00</option>
+                <option value="12-13">12:00-13:00</option>
+                <option value="13-14">13:00-14:00</option>
+                <option value="14-15">14:00-15:00</option>
+                <option value="15-16">15:00-16:00</option>
+                <option value="16-17">16:00-17:00</option>
+                <option value="17-18">17:00-18:00</option>
+            </select>
+            <input type="submit" value="Zarezerwuj i zapłać">
+        </form>
+    </div>
+
+    <div id="calendar"></div>
+{% endblock %}
+</body>
+</html>
