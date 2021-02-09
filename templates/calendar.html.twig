@@ -3,11 +3,24 @@
 <html>
 <head>
     <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Calendar{% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <style>
+            .modal-header, h4, .close {
+                background-color: #5cb85c;
+                color:white !important;
+                text-align: center;
+                font-size: 30px;
+            }
+            .modal-footer {
+                background-color: #f9f9f9;
+            }
+        </style>
     {% endblock %}
 
     {% block javascripts %}
@@ -16,11 +29,13 @@
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script>
-            var eventsA=[];
-            var eventsB=[];
-            var eventsC=[];
-            let events = [];
+
+            var events=[], eventsA=[], eventsB=[], eventsC=[];
+            var dayClicked = false;
+            var specialist, clickedDay;
+
             document.addEventListener('DOMContentLoaded', function() {
                 {#//var specialist = {{ specialist }};#}
                 {#//console.log(specialist);#}
@@ -31,7 +46,7 @@
                     sessionStorage.removeItem('specialist');
                 }
                 else {
-                    var specialist = sessionStorage.getItem("specialist");
+                    specialist = sessionStorage.getItem("specialist");
                     console.log(specialist);
                 }
 
@@ -86,6 +101,7 @@
                 if(specialist==='danielspraktyka2@gmail.com')
                 {
                     events=eventsB;
+
                 }
                 if(specialist==='danielspraktyka3@gmail.com')
                 {
@@ -100,6 +116,7 @@
                     firstDay: 1,
                     slotDuration: '01:00',
                     slotMinTime: "10:00:00",
+                    unselectAuto: true,
                     eventTimeFormat: { // like '14:30:00'
                         hour: '2-digit',
                         minute: '2-digit',
@@ -122,14 +139,31 @@
                     events: events,
                     plugins: ['interaction', 'dayGrid', 'timeGrid'], // https://fullcalendar.io/docs/plugin-index
                     timeZone: 'UTC',
+                    selectable: true,
+                    selectMirror: true,
                     dateClick: function(info) {
+                        if(document.getElementById("specialist").value==='Wybierz specjaliste'){
+                            calendar.unselect()
+                            alert("Najpierw wybierz specjaliste do którego chcesz się zarejestrować!")
+                        }
+                        else {
+                            clickedDay=info.dateStr;
+                            $(document).ready(function(){
+                                PlaceholdersModal();
+                                $("#myModal").modal();
+
+                            });
+                        }
+
                         //alert('Clicked on: ' + info.dateStr); //wybrany dzien
                         // change the day's background color just for fun
-                        info.dayEl.style.backgroundColor = 'red';
+                        //info.dayEl.style.backgroundColor = 'red';
                         //info.dayEl.style.backgroundColor = 'white';
                     }
                 });
                 calendar.render();
+                calendar.unselect()
+
 
 
             });
@@ -160,7 +194,7 @@
                 //});
             }
 
-            console.log(eventsB);
+            console.log(events[0].start);
 
             //zapamietywanie wyboru specjalisty po refreshu
             var selectedProduct = sessionStorage.getItem("specialist");
@@ -173,7 +207,23 @@
                 });
             }
 
+            var specialistName;
+            function PlaceholdersModal() {
+                if(specialist ==="danielspraktyka@gmail.com"){
+                    specialistName="dr Mariusz Pudzianowski";
+                }
+                else if(specialist ==="danielspraktyka2@gmail.com"){
+                    specialistName="dr Adam Małysz";
+                }
+                else if(specialist ==="danielspraktyka3@gmail.com"){
+                    specialistName="dr Jacek Krzynówek";
+                }
+
+                document.getElementById("spec").placeholder = specialistName;
+                document.getElementById("date").placeholder = clickedDay;
+            }
         </script>
+
     {% endblock %}
 
 </head>
@@ -181,7 +231,7 @@
 {% block body %}
 {#    {{ dump(specialistA) }}#}
 {#    {% for event in events %}#}
-        {{ dump(events) }}
+{#        {{ dump(events) }}#}
 
 {#        Start date: {{ event.start.dateTime }} <br>#}
 {#        End date: {{ event.end.dateTime }} <br><br>#}
@@ -189,31 +239,106 @@
 
     <div class="form">
         <form id="form" method="post">
-            <label for="specialist">Zarejestruj wizyte: </label>
+            <label for="specialist">Wybierz specjalistę aby zobaczyć dostępne terminy: </label>
 
             <select id="specialist" name="specialist" onchange="changeSpecialist()">
                 <option selected="default" disabled>Wybierz specjaliste</option>
-                <option value="SpecjalistaA">Specjalista A</option>
-                <option value="SpecjalistaB">Specjalista B</option>
-                <option value="SpecjalistaC">Specjalista C</option>
+                <option value="SpecjalistaA">dr Mariusz Pudzianowski</option>
+                <option value="SpecjalistaB">dr Adam Małysz</option>
+                <option value="SpecjalistaC">dr Jacek Krzynówek</option>
             </select>
 
-            <select id="time" name="time">
-                <option selected="default" disabled>Wybierz godzine</option>
-                <option value="10-11">10:00-11:00</option>
-                <option value="11-12">11:00-12:00</option>
-                <option value="12-13">12:00-13:00</option>
-                <option value="13-14">13:00-14:00</option>
-                <option value="14-15">14:00-15:00</option>
-                <option value="15-16">15:00-16:00</option>
-                <option value="16-17">16:00-17:00</option>
-                <option value="17-18">17:00-18:00</option>
-            </select>
-            <input type="submit" value="Zarezerwuj i zapłać">
+{#            <select id="time" name="time">#}
+{#                <option selected="default" disabled>Wybierz godzine</option>#}
+{#                <option value="10:00">10:00-11:00</option>#}
+{#                <option value="11:00">11:00-12:00</option>#}
+{#                <option value="12:00">12:00-13:00</option>#}
+{#                <option value="13:00">13:00-14:00</option>#}
+{#                <option value="14:00">14:00-15:00</option>#}
+{#                <option value="15:00">15:00-16:00</option>#}
+{#                <option value="16:00">16:00-17:00</option>#}
+{#                <option value="17:00">17:00-18:00</option>#}
+{#            </select>#}
+{#            <input type="submit" value="Zarezerwuj i zapłać">#}
         </form>
     </div>
 
     <div id="calendar"></div>
+
+{# ///////////////////////       MODAL      ////////////////////////////////////   #}
+    <div class="container">
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4><span class="glyphicon glyphicon-ok"></span> <b>Zarejestruj wizytę</b></h4>
+                    </div>
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany specjalista</label>
+                                <input type="text" class="form-control" id="spec" placeholder='' disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana data</label>
+                                <input type="text" class="form-control" id="date" placeholder="Data" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
+{#                                <input type="text" class="form-control" id="time" placeholder="Godzina">#}
+                                <select id="time" class="form-control">
+                                    <option selected="default" disabled>Wybierz godzine</option>
+                                    <option value="10:00">10:00-11:00</option>
+                                    <option value="11:00">11:00-12:00</option>
+                                    <option value="12:00">12:00-13:00</option>
+                                    <option value="13:00">13:00-14:00</option>
+                                    <option value="14:00">14:00-15:00</option>
+                                    <option value="15:00">15:00-16:00</option>
+                                    <option value="16:00">16:00-17:00</option>
+                                    <option value="17:00">17:00-18:00</option>
+                                </select>
+                            </div>
+
+                            <center><h3>Dane do rejestracji</h3></center>
+
+                            <div class="form-group">
+                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Imię i nazwisko</label>
+                                <input type="text" class="form-control" id="spec" placeholder='Wpisz imię i nazwisko'>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="spec"><span class="glyphicon glyphicon-paperclip"></span> Email</label>
+                                <input type="text" class="form-control" id="spec" placeholder='Wpisz email'>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="spec"><span class="glyphicon glyphicon-earphone"></span> Telefon kontaktowy</label>
+                                <input type="text" class="form-control" id="spec" placeholder='Wpisz telefon do kontaktu'>
+                            </div>
+
+
+{#                            <div class="checkbox">#}
+{#                                <label><input type="checkbox" value="" checked>Remember me</label>#}
+{#                            </div>#}
+                            <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+{#                        <p>Not a member? <a href="#">Sign Up</a></p>#}
+{#                        <p>Forgot <a href="#">Password?</a></p>#}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 </body>
 </html>
