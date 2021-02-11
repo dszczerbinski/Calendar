@@ -32,22 +32,17 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script>
 
-            var events=[], eventsA=[], eventsB=[], eventsC=[];
+            var events=[], eventsA=[], eventsB=[], eventsC=[],busyTimes=[];
             var dayClicked = false;
             var specialist, clickedDay;
 
             document.addEventListener('DOMContentLoaded', function() {
-                {#//var specialist = {{ specialist }};#}
-                {#//console.log(specialist);#}
-                {#//#}
-                {# let specialist= {{ specialist }}; #}
 
                 if(document.getElementById("specialist").value==='Wybierz specjaliste'){
                     sessionStorage.removeItem('specialist');
                 }
                 else {
                     specialist = sessionStorage.getItem("specialist");
-                    console.log(specialist);
                 }
 
 
@@ -83,32 +78,19 @@
                             })
                         };
                     }
-                    // else
-                    // {
-                    //     events.push({
-                    //         title: js_events.summary,
-                    //         start: js_events.start.dateTime,
-                    //         end: js_events.end.dateTime,
-                    //         //color: 'orange',
-                    //     });
-                    // }
 
                 });
-                if(specialist==='danielspraktyka@gmail.com')
-                {
+                if(specialist==='danielspraktyka@gmail.com') {
                     events=eventsA;
                 }
-                if(specialist==='danielspraktyka2@gmail.com')
-                {
+                if(specialist==='danielspraktyka2@gmail.com') {
                     events=eventsB;
-
                 }
-                if(specialist==='danielspraktyka3@gmail.com')
-                {
+                if(specialist==='danielspraktyka3@gmail.com') {
                     events=eventsC;
                 }
-                var calendarEl = document.getElementById('calendar');
 
+                var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                     defaultView: 'dayGridMonth',
                     locale: 'pl',
@@ -116,6 +98,7 @@
                     firstDay: 1,
                     slotDuration: '01:00',
                     slotMinTime: "10:00:00",
+                    slotMaxTime: "18:00:00",
                     unselectAuto: true,
                     eventTimeFormat: { // like '14:30:00'
                         hour: '2-digit',
@@ -138,7 +121,6 @@
                     googleCalendarApiKey: 'AIzaSyBvc5Y3UcDZvHF8Myl3PCwFi8-xQPCTSDc',
                     events: events,
                     plugins: ['interaction', 'dayGrid', 'timeGrid'], // https://fullcalendar.io/docs/plugin-index
-                    timeZone: 'UTC',
                     selectable: true,
                     selectMirror: true,
                     dateClick: function(info) {
@@ -147,26 +129,72 @@
                             alert("Najpierw wybierz specjaliste do którego chcesz się zarejestrować!")
                         }
                         else {
-                            clickedDay=info.dateStr;
-                            $(document).ready(function(){
-                                PlaceholdersModal();
-                                $("#myModal").modal();
 
-                            });
+                            clickedDay=info.dateStr;
+                            let clickedDayDate = new Date(clickedDay);
+                            let currDate = calendar.getDate().getDate();
+
+                            if(clickedDayDate.getDate()<currDate){
+                                alert("Nie możesz wybrać przeszłej daty!")
+                            }
+                            else{
+
+                                console.log(events);
+
+                                events.forEach(function (events) {
+                                    if(clickedDay===events.start.slice(0,10)){
+                                        busyTimes.push(events.start.slice(11,16));
+                                    }
+                                });
+                                console.log(busyTimes);
+                                console.log(events[0].start.slice(0,10));
+                                console.log(clickedDay);
+
+                                //$("#time").each(function(idx, element) {
+                                    busyTimes.forEach(function (busyTime) {
+                                        $('#time option[value="' + busyTime +'"]').prop('disabled', true);
+                                        console.log(busyTime);
+                                        // if($(element).val()==busyTimes){
+                                        //     $(element).attr("disabled", "disabled");
+                                        // }
+                                    });
+                                //});
+                                // $(document).ready(function(){
+                                // $('#time').click(function(){
+                                //     //alert("click");
+                                //     busyTimes.forEach(function (busyTimes) {
+                                //         console.log($(this).val());
+                                //         if($(this).val() === busyTimes){
+                                //             $(this).attr("disabled", "disabled");
+                                //         }
+                                //         });
+                                // });
+                                //     console.log($(this).val());
+                                //     console.log(busyTimes);
+                                //     console.log("test");
+                                // });
+
+
+
+                                $(document).ready(function(){
+                                    PlaceholdersModal();
+                                    $("#myModal").modal();
+                                });
+                                busyTimes=[];
+                            }
                         }
 
                         //alert('Clicked on: ' + info.dateStr); //wybrany dzien
                         // change the day's background color just for fun
                         //info.dayEl.style.backgroundColor = 'red';
-                        //info.dayEl.style.backgroundColor = 'white';
+                        //info.dayEl.style.backgroundColor = 'white';     SLICE OD 0 DO 9
                     }
                 });
                 calendar.render();
                 calendar.unselect()
-
-
-
             });
+            console.log(eventsA);
+
             function changeSpecialist() {
                 // let temp = document.querySelector('#specialist');
                 let temp = document.getElementById("specialist").value;
@@ -194,7 +222,7 @@
                 //});
             }
 
-            console.log(events[0].start);
+            console.log(eventsA[0].start);
 
             //zapamietywanie wyboru specjalisty po refreshu
             var selectedProduct = sessionStorage.getItem("specialist");
@@ -208,6 +236,7 @@
             }
 
             var specialistName;
+
             function PlaceholdersModal() {
                 if(specialist ==="danielspraktyka@gmail.com"){
                     specialistName="dr Mariusz Pudzianowski";
@@ -293,14 +322,14 @@
 {#                                <input type="text" class="form-control" id="time" placeholder="Godzina">#}
                                 <select id="time" class="form-control">
                                     <option selected="default" disabled>Wybierz godzine</option>
-                                    <option value="10:00">10:00-11:00</option>
-                                    <option value="11:00">11:00-12:00</option>
-                                    <option value="12:00">12:00-13:00</option>
-                                    <option value="13:00">13:00-14:00</option>
-                                    <option value="14:00">14:00-15:00</option>
-                                    <option value="15:00">15:00-16:00</option>
-                                    <option value="16:00">16:00-17:00</option>
-                                    <option value="17:00">17:00-18:00</option>
+                                    <option id="10" value="10:00">10:00-11:00</option>
+                                    <option id="11" value="11:00">11:00-12:00</option>
+                                    <option id="12" value="12:00">12:00-13:00</option>
+                                    <option id="13" value="13:00">13:00-14:00</option>
+                                    <option id="14" value="14:00">14:00-15:00</option>
+                                    <option id="15" value="15:00">15:00-16:00</option>
+                                    <option id="16" value="16:00">16:00-17:00</option>
+                                    <option id="17" value="17:00">17:00-18:00</option>
                                 </select>
                             </div>
 
