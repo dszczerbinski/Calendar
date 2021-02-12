@@ -222,8 +222,6 @@
                 //});
             }
 
-            console.log(eventsA[0].start);
-
             //zapamietywanie wyboru specjalisty po refreshu
             var selectedProduct = sessionStorage.getItem("specialist");
             if(selectedProduct != undefined || selectedProduct != null){
@@ -248,8 +246,8 @@
                     specialistName="dr Jacek Krzynówek";
                 }
 
-                document.getElementById("spec").placeholder = specialistName;
-                document.getElementById("date").placeholder = clickedDay;
+                document.getElementById("spec").value = specialistName;
+                document.getElementById("date").value = clickedDay;
             }
         </script>
 
@@ -308,19 +306,19 @@
                         <h4><span class="glyphicon glyphicon-ok"></span> <b>Zarejestruj wizytę</b></h4>
                     </div>
                     <div class="modal-body" style="padding:40px 50px;">
-                        <form role="form">
+                        <form role="form" method="post">
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany specjalista</label>
-                                <input type="text" class="form-control" id="spec" placeholder='' disabled>
+                                <input type="text" name="specialist" class="form-control" id="spec" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana data</label>
-                                <input type="text" class="form-control" id="date" placeholder="Data" disabled>
+                                <input type="text" name="date" class="form-control" id="date" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
 {#                                <input type="text" class="form-control" id="time" placeholder="Godzina">#}
-                                <select id="time" class="form-control">
+                                <select id="time" name="time" class="form-control" required>
                                     <option selected="default" disabled>Wybierz godzine</option>
                                     <option id="10" value="10:00">10:00-11:00</option>
                                     <option id="11" value="11:00">11:00-12:00</option>
@@ -337,24 +335,24 @@
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-user"></span> Imię i nazwisko</label>
-                                <input type="text" class="form-control" id="spec" placeholder='Wpisz imię i nazwisko'>
+                                <input type="text" name="nameSurname" class="form-control" id="spec" placeholder='Wpisz imię i nazwisko' required>
                             </div>
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-paperclip"></span> Email</label>
-                                <input type="text" class="form-control" id="spec" placeholder='Wpisz email'>
+                                <input type="text" name="clientemail" class="form-control" id="spec" placeholder='Wpisz email' required>
                             </div>
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-earphone"></span> Telefon kontaktowy</label>
-                                <input type="text" class="form-control" id="spec" placeholder='Wpisz telefon do kontaktu'>
+                                <input type="tel" max="9" name="phoneNumber" class="form-control" id="spec" pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu' required>
                             </div>
 
 
 {#                            <div class="checkbox">#}
 {#                                <label><input type="checkbox" value="" checked>Remember me</label>#}
 {#                            </div>#}
-                            <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać</button>
+                            <button type="submit" name="register" class="btn btn-success btn-block"><span class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać</button>
                         </form>
                     </div>
                     <div class="modal-footer">
