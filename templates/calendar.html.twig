@@ -2,7 +2,7 @@
 <html lang='en'>
 <html>
 <head>
-    <meta charset='utf-8' />
+    <meta charset='utf-8'/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Calendar{% endblock %}</title>
     {% block stylesheets %}
@@ -13,12 +13,21 @@
         <style>
             .modal-header, h4, .close {
                 background-color: #5cb85c;
-                color:white !important;
+                color: white !important;
                 text-align: center;
                 font-size: 30px;
             }
+
             .modal-footer {
                 background-color: #f9f9f9;
+            }
+
+            option:disabled {
+                color: #ff0000;
+            }
+
+            option:default {
+                color: #808080;
             }
         </style>
     {% endblock %}
@@ -32,62 +41,60 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script>
 
-            var events=[], eventsA=[], eventsB=[], eventsC=[],busyTimes=[];
+            var events = [], eventsA = [], eventsB = [], eventsC = [], busyTimes = [];
             var dayClicked = false;
             var specialist, clickedDay;
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
 
-                if(document.getElementById("specialist").value==='Wybierz specjaliste'){
+                if (document.getElementById("specialist").value === 'Wybierz specjaliste') {
                     sessionStorage.removeItem('specialist');
-                }
-                else {
+                } else {
                     specialist = sessionStorage.getItem("specialist");
                 }
 
 
                 let js_events = {{ events|json_encode|raw }};
                 js_events.forEach(function (js_events) {
-                    if(typeof js_events.attendees !== 'undefined')
-                    {
-                        if(js_events.attendees[0].email==="danielspraktyka@gmail.com" || js_events.attendees[1].email==="danielspraktyka@gmail.com")
-                        {
+                    if (typeof js_events.attendees !== 'undefined') {
+                        if (js_events.attendees[0].email === "danielspraktyka@gmail.com" || js_events.attendees[1].email === "danielspraktyka@gmail.com") {
                             eventsA.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'orange',
                             })
-                        };
-                        if(js_events.attendees[0].email==="danielspraktyka2@gmail.com" || js_events.attendees[1].email==="danielspraktyka2@gmail.com")
-                        {
+                        }
+                        ;
+                        if (js_events.attendees[0].email === "danielspraktyka2@gmail.com" || js_events.attendees[1].email === "danielspraktyka2@gmail.com") {
                             eventsB.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'green',
                             })
-                        };
-                        if(js_events.attendees[0].email==="danielspraktyka3@gmail.com" || js_events.attendees[1].email==="danielspraktyka3@gmail.com")
-                        {
+                        }
+                        ;
+                        if (js_events.attendees[0].email === "danielspraktyka3@gmail.com" || js_events.attendees[1].email === "danielspraktyka3@gmail.com") {
                             eventsC.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'red',
                             })
-                        };
+                        }
+                        ;
                     }
 
                 });
-                if(specialist==='danielspraktyka@gmail.com') {
-                    events=eventsA;
+                if (specialist === 'danielspraktyka@gmail.com') {
+                    events = eventsA;
                 }
-                if(specialist==='danielspraktyka2@gmail.com') {
-                    events=eventsB;
+                if (specialist === 'danielspraktyka2@gmail.com') {
+                    events = eventsB;
                 }
-                if(specialist==='danielspraktyka3@gmail.com') {
-                    events=eventsC;
+                if (specialist === 'danielspraktyka3@gmail.com') {
+                    events = eventsC;
                 }
 
                 var calendarEl = document.getElementById('calendar');
@@ -123,71 +130,44 @@
                     plugins: ['interaction', 'dayGrid', 'timeGrid'], // https://fullcalendar.io/docs/plugin-index
                     selectable: true,
                     selectMirror: true,
-                    dateClick: function(info) {
-                        if(document.getElementById("specialist").value==='Wybierz specjaliste'){
+                    dateClick: function (info) {
+                        if (document.getElementById("specialist").value === 'Wybierz specjaliste') {
                             calendar.unselect()
                             alert("Najpierw wybierz specjaliste do którego chcesz się zarejestrować!")
-                        }
-                        else {
+                        } else {
 
-                            clickedDay=info.dateStr;
+                            clickedDay = info.dateStr;
                             let clickedDayDate = new Date(clickedDay);
                             let currDate = calendar.getDate().getDate();
 
-                            if(clickedDayDate.getDate()<currDate){
+                            if (clickedDayDate.getDate() < currDate) {
                                 alert("Nie możesz wybrać przeszłej daty!")
-                            }
-                            else{
+                            } else {
 
                                 console.log(events);
 
                                 events.forEach(function (events) {
-                                    if(clickedDay===events.start.slice(0,10)){
-                                        busyTimes.push(events.start.slice(11,16));
+                                    if (clickedDay === events.start.slice(0, 10)) {
+                                        busyTimes.push(events.start.slice(11, 16));
                                     }
                                 });
                                 console.log(busyTimes);
-                                console.log(events[0].start.slice(0,10));
+                                console.log(events[0].start.slice(0, 10));
                                 console.log(clickedDay);
 
                                 //$("#time").each(function(idx, element) {
-                                    busyTimes.forEach(function (busyTime) {
-                                        $('#time option[value="' + busyTime +'"]').prop('disabled', true);
-                                        console.log(busyTime);
-                                        // if($(element).val()==busyTimes){
-                                        //     $(element).attr("disabled", "disabled");
-                                        // }
-                                    });
-                                //});
-                                // $(document).ready(function(){
-                                // $('#time').click(function(){
-                                //     //alert("click");
-                                //     busyTimes.forEach(function (busyTimes) {
-                                //         console.log($(this).val());
-                                //         if($(this).val() === busyTimes){
-                                //             $(this).attr("disabled", "disabled");
-                                //         }
-                                //         });
-                                // });
-                                //     console.log($(this).val());
-                                //     console.log(busyTimes);
-                                //     console.log("test");
-                                // });
+                                busyTimes.forEach(function (busyTime) {
+                                    $('#time option[value="' + busyTime + '"]').prop('disabled', true);
+                                    console.log(busyTime);
+                                });
 
-
-
-                                $(document).ready(function(){
+                                $(document).ready(function () {
                                     PlaceholdersModal();
                                     $("#myModal").modal();
                                 });
-                                busyTimes=[];
+                                busyTimes = [];
                             }
                         }
-
-                        //alert('Clicked on: ' + info.dateStr); //wybrany dzien
-                        // change the day's background color just for fun
-                        //info.dayEl.style.backgroundColor = 'red';
-                        //info.dayEl.style.backgroundColor = 'white';     SLICE OD 0 DO 9
                     }
                 });
                 calendar.render();
@@ -200,31 +180,22 @@
                 let temp = document.getElementById("specialist").value;
                 console.log(temp);
                 //document.getElementById("form").submit();
-                if(temp==="SpecjalistaA")
-                {
+                if (temp === "SpecjalistaA") {
                     sessionStorage.setItem("specialist", "danielspraktyka@gmail.com");
                 }
-                if(temp==="SpecjalistaB")
-                {
+                if (temp === "SpecjalistaB") {
                     sessionStorage.setItem("specialist", "danielspraktyka2@gmail.com");
                 }
-                if(temp==="SpecjalistaC")
-                {
+                if (temp === "SpecjalistaC") {
                     sessionStorage.setItem("specialist", "danielspraktyka3@gmail.com");
                 }
 
                 location.reload();
-                // events.push({
-                //     title: 'test',
-                //     start: js_events.start.dateTime,
-                //     //end: js_events.end.dateTime,
-                //     //color: 'orange',
-                //});
             }
 
             //zapamietywanie wyboru specjalisty po refreshu
             var selectedProduct = sessionStorage.getItem("specialist");
-            if(selectedProduct != undefined || selectedProduct != null){
+            if (selectedProduct != undefined || selectedProduct != null) {
                 $(".ProductDetails select").first().find(":selected").removeAttr("selected");
                 $(".ProductDetails select").find("option").each(function () {
                     if ($(this).val() == selectedProduct) {
@@ -236,14 +207,12 @@
             var specialistName;
 
             function PlaceholdersModal() {
-                if(specialist ==="danielspraktyka@gmail.com"){
-                    specialistName="dr Mariusz Pudzianowski";
-                }
-                else if(specialist ==="danielspraktyka2@gmail.com"){
-                    specialistName="dr Adam Małysz";
-                }
-                else if(specialist ==="danielspraktyka3@gmail.com"){
-                    specialistName="dr Jacek Krzynówek";
+                if (specialist === "danielspraktyka@gmail.com") {
+                    specialistName = "dr Mariusz Pudzianowski";
+                } else if (specialist === "danielspraktyka2@gmail.com") {
+                    specialistName = "dr Adam Małysz";
+                } else if (specialist === "danielspraktyka3@gmail.com") {
+                    specialistName = "dr Jacek Krzynówek";
                 }
 
                 document.getElementById("spec").value = specialistName;
@@ -256,13 +225,6 @@
 </head>
 <body>
 {% block body %}
-{#    {{ dump(specialistA) }}#}
-{#    {% for event in events %}#}
-{#        {{ dump(events) }}#}
-
-{#        Start date: {{ event.start.dateTime }} <br>#}
-{#        End date: {{ event.end.dateTime }} <br><br>#}
-{#    {% endfor %}#}
 
     <div class="form">
         <form id="form" method="post">
@@ -274,25 +236,12 @@
                 <option value="SpecjalistaB">dr Adam Małysz</option>
                 <option value="SpecjalistaC">dr Jacek Krzynówek</option>
             </select>
-
-{#            <select id="time" name="time">#}
-{#                <option selected="default" disabled>Wybierz godzine</option>#}
-{#                <option value="10:00">10:00-11:00</option>#}
-{#                <option value="11:00">11:00-12:00</option>#}
-{#                <option value="12:00">12:00-13:00</option>#}
-{#                <option value="13:00">13:00-14:00</option>#}
-{#                <option value="14:00">14:00-15:00</option>#}
-{#                <option value="15:00">15:00-16:00</option>#}
-{#                <option value="16:00">16:00-17:00</option>#}
-{#                <option value="17:00">17:00-18:00</option>#}
-{#            </select>#}
-{#            <input type="submit" value="Zarezerwuj i zapłać">#}
         </form>
     </div>
 
     <div id="calendar"></div>
 
-{# ///////////////////////       MODAL      ////////////////////////////////////   #}
+    {# ///////////////////////       MODAL      //////////////////////////////////// #}
     <div class="container">
 
         <!-- Modal -->
@@ -308,16 +257,18 @@
                     <div class="modal-body" style="padding:40px 50px;">
                         <form role="form" method="post">
                             <div class="form-group">
-                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany specjalista</label>
+                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany
+                                    specjalista</label>
                                 <input type="text" name="specialist" class="form-control" id="spec" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana data</label>
+                                <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana
+                                    data</label>
                                 <input type="text" name="date" class="form-control" id="date" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
-{#                                <input type="text" class="form-control" id="time" placeholder="Godzina">#}
+                                {# <input type="text" class="form-control" id="time" placeholder="Godzina"> #}
                                 <select id="time" name="time" class="form-control" required>
                                     <option selected="default" disabled>Wybierz godzine</option>
                                     <option id="10" value="10:00">10:00-11:00</option>
@@ -335,37 +286,39 @@
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-user"></span> Imię i nazwisko</label>
-                                <input type="text" name="nameSurname" class="form-control" id="spec" placeholder='Wpisz imię i nazwisko' required>
+                                <input type="text" name="nameSurname" class="form-control" id="spec"
+                                       placeholder='Wpisz imię i nazwisko' required>
                             </div>
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-paperclip"></span> Email</label>
-                                <input type="text" name="clientemail" class="form-control" id="spec" placeholder='Wpisz email' required>
+                                <input type="text" name="clientemail" class="form-control" id="spec"
+                                       placeholder='Wpisz email' required>
                             </div>
 
                             <div class="form-group">
                                 <label for="spec"><span class="glyphicon glyphicon-earphone"></span> Telefon kontaktowy</label>
-                                <input type="tel" max="9" name="phoneNumber" class="form-control" id="spec" pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu' required>
+                                <input type="tel" max="9" name="phoneNumber" class="form-control" id="spec"
+                                       pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu'
+                                       required>
                             </div>
-
-
-{#                            <div class="checkbox">#}
-{#                                <label><input type="checkbox" value="" checked>Remember me</label>#}
-{#                            </div>#}
-                            <button type="submit" name="register" class="btn btn-success btn-block"><span class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać</button>
+                            <button type="submit" name="register" class="btn btn-success btn-block"><span
+                                        class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać
+                            </button>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
-{#                        <p>Not a member? <a href="#">Sign Up</a></p>#}
-{#                        <p>Forgot <a href="#">Password?</a></p>#}
+                        <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
+                                    class="glyphicon glyphicon-remove"></span> Cancel
+                        </button>
+                        {# <p>Not a member? <a href="#">Sign Up</a></p> #}
+                        {# <p>Forgot <a href="#">Password?</a></p> #}
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
-
 {% endblock %}
 </body>
 </html>

@@ -12,7 +12,7 @@ class GoogleApiService
     public function createGoogle()
     {
         $client = new Google_Client();
-        $client->setApplicationName('Google Calendar API PHP Quickstart');
+        $client->setApplicationName('Calendar');
         $client->addScope('https://www.googleapis.com/auth/calendar');
         $client->setAuthConfig('C:\composer\calendar\credentials.json');
         $client->setAccessType('offline');
@@ -59,7 +59,7 @@ class GoogleApiService
         $service = new Google_Service_Calendar($client);
 
 // Print the next 10 events on the user's calendar.
-        $calendarId = 'primary';
+        $calendarId = 'daniels@biznesport.pl';
         $optParams = array(
             'maxResults' => 10,
             'orderBy' => 'startTime',
@@ -70,24 +70,12 @@ class GoogleApiService
         $events = $results->getItems();
 
         if (isset($_POST['register'])) {
-            function debug_to_console($data)
-            {
-                $output = $data;
-                if (is_array($output))
-                    $output = implode(',', $output);
-
-                echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-            }
-
             $clientemail = $_POST['clientemail'];
             $date = $_POST['date'];
             $specialist = $_POST['specialist'];
             $nameSurname = $_POST['nameSurname'];
             $phoneNumber = $_POST['phoneNumber'];
             $starttime = $_POST['time'];
-            debug_to_console($starttime);
-
-            debug_to_console($date);
             $startEvent = $date . "T" . $starttime . ":00+01:00";
             $endEvent = $startEvent;
             $endEvent[12] = intval($endEvent[12]) + 1;
@@ -109,9 +97,6 @@ Email klienta: ' . $clientemail,
                     'dateTime' => $endEvent,
                     'timeZone' => 'Europe/Warsaw',
                 ),
-//                'recurrence' => array(
-//                    'RRULE:FREQ=DAILY;COUNT=2'
-//                ),
                 'attendees' => array(
                     array('email' => 'daniels@biznesport.pl'),
                     array('email' => 'danielspraktyka@gmail.com'),
@@ -126,12 +111,10 @@ Email klienta: ' . $clientemail,
 //                ),
             ));
 
-            $calendarId = 'primary';
+            $calendarId = 'daniels@biznesport.pl';
             $event = $service->events->insert($calendarId, $event);
             header("Refresh:0");
         }
         return $events;
     }
-
-
 }
