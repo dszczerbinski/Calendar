@@ -120,6 +120,7 @@
       <path value="$PROJECT_DIR$/vendor/php-http/guzzle7-adapter" />
       <path value="$PROJECT_DIR$/vendor/php-http/httplug" />
       <path value="$PROJECT_DIR$/vendor/php-http/promise" />
+      <path value="$PROJECT_DIR$/vendor/openpayu/openpayu" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

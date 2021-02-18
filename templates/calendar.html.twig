@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
         <style>
             .modal-header, h4, .close {
                 background-color: #5cb85c;
@@ -38,21 +38,21 @@
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
         <script>
 
             var events = [], eventsA = [], eventsB = [], eventsC = [], busyTimes = [];
             var dayClicked = false;
             var specialist, clickedDay;
+            var ip={{ ip|json_encode|raw }};
 
             document.addEventListener('DOMContentLoaded', function () {
 
-                if (document.getElementById("specialist").value === 'Wybierz specjaliste') {
+                if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
                     sessionStorage.removeItem('specialist');
                 } else {
                     specialist = sessionStorage.getItem("specialist");
                 }
-
 
                 let js_events = {{ events|json_encode|raw }};
                 js_events.forEach(function (js_events) {
@@ -131,9 +131,9 @@
                     selectable: true,
                     selectMirror: true,
                     dateClick: function (info) {
-                        if (document.getElementById("specialist").value === 'Wybierz specjaliste') {
+                        if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
                             calendar.unselect()
-                            alert("Najpierw wybierz specjaliste do którego chcesz się zarejestrować!")
+                            alert("Najpierw wybierz specjalistę do którego chcesz się zarejestrować!")
                         } else {
 
                             clickedDay = info.dateStr;
@@ -142,20 +142,15 @@
 
                             if (clickedDayDate.getDate() < currDate) {
                                 alert("Nie możesz wybrać przeszłej daty!")
-                            } else {
+                            }
+                            else if (clickedDayDate.getDay() == 6 || clickedDayDate.getDay() == 0) alert('Gabinet nieczynny w weekend!');
 
-                                console.log(events);
-
+                            else {
                                 events.forEach(function (events) {
                                     if (clickedDay === events.start.slice(0, 10)) {
                                         busyTimes.push(events.start.slice(11, 16));
                                     }
                                 });
-                                console.log(busyTimes);
-                                console.log(events[0].start.slice(0, 10));
-                                console.log(clickedDay);
-
-                                //$("#time").each(function(idx, element) {
                                 busyTimes.forEach(function (busyTime) {
                                     $('#time option[value="' + busyTime + '"]').prop('disabled', true);
                                     console.log(busyTime);
@@ -191,6 +186,7 @@
                 }
 
                 location.reload();
+                $("#calendar").load(" #calendar > *");
             }
 
             //zapamietywanie wyboru specjalisty po refreshu
@@ -227,16 +223,20 @@
 {% block body %}
 
     <div class="form">
+        <div class="form-group mb-2">
         <form id="form" method="post">
+
             <label for="specialist">Wybierz specjalistę aby zobaczyć dostępne terminy: </label>
 
-            <select id="specialist" name="specialist" onchange="changeSpecialist()">
-                <option selected="default" disabled>Wybierz specjaliste</option>
+            <select id="specialist" name="specialist" class="form-control" onchange="changeSpecialist()">
+                <option selected="default"disabled>Wybierz specjalistę</option>
                 <option value="SpecjalistaA">dr Mariusz Pudzianowski</option>
                 <option value="SpecjalistaB">dr Adam Małysz</option>
                 <option value="SpecjalistaC">dr Jacek Krzynówek</option>
             </select>
+
         </form>
+        </div>
     </div>
 
     <div id="calendar"></div>
@@ -302,14 +302,12 @@
                                        pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu'
                                        required>
                             </div>
-                            <button type="submit" name="register" class="btn btn-success btn-block"><span
-                                        class="glyphicon glyphicon-credit-card"></span> Zarejestruj i zapłać
-                            </button>
+                            <center><button type="submit" name="register" style="border: 0px; height: 50px; width: 290px; right: 50px; background: url('http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png'); cursor: pointer;"></button></center></form>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
-                                    class="glyphicon glyphicon-remove"></span> Cancel
+                                    class="glyphicon glyphicon-remove"></span> Anuluj
                         </button>
                         {# <p>Not a member? <a href="#">Sign Up</a></p> #}
                         {# <p>Forgot <a href="#">Password?</a></p> #}

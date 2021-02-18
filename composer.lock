@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24c2398c9bc01707f55b163b73c4d54c",
+    "content-hash": "0ed7fb47986bdef769f09edcd9216650",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -2300,6 +2300,57 @@
                 }
             ],
             "time": "2020-12-14T13:15:25+00:00"
+        },
+        {
+            "name": "openpayu/openpayu",
+            "version": "2.2.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PayU-EMEA/openpayu_php.git",
+                "reference": "a331a74df2666e35d63364bf563054a6efcacb73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PayU-EMEA/openpayu_php/zipball/a331a74df2666e35d63364bf563054a6efcacb73",
+                "reference": "a331a74df2666e35d63364bf563054a6efcacb73",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-hash": "*",
+                "ext-json": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.3"
+            },
+            "type": "library",
+            "extra": [
+                {
+                    "engine": "PHP SDK"
+                }
+            ],
+            "autoload": {
+                "classmap": [
+                    "lib/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "OpenPayU",
+                    "homepage": "http://developers.payu.com"
+                }
+            ],
+            "description": "OpenPayU PHP Library",
+            "support": {
+                "issues": "https://github.com/PayU/openpayu_php/issues",
+                "source": "https://github.com/PayU-EMEA/openpayu_php/tree/v2.2.13"
+            },
+            "time": "2021-01-27T10:50:38+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -5011,16 +5062,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v5.2.2",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "16dfa5acf8103f0394d447f8eea3ea49f9e50855"
+                "reference": "20c554c0f03f7cde5ce230ed248470cccbc34c36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/16dfa5acf8103f0394d447f8eea3ea49f9e50855",
-                "reference": "16dfa5acf8103f0394d447f8eea3ea49f9e50855",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/20c554c0f03f7cde5ce230ed248470cccbc34c36",
+                "reference": "20c554c0f03f7cde5ce230ed248470cccbc34c36",
                 "shasum": ""
             },
             "require": {
@@ -5064,7 +5115,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v5.2.2"
+                "source": "https://github.com/symfony/http-foundation/tree/v5.2.3"
             },
             "funding": [
                 {
@@ -5080,7 +5131,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T11:19:04+00:00"
+            "time": "2021-02-03T04:42:09+00:00"
         },
         {
             "name": "symfony/http-kernel",

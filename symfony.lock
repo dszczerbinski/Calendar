@@ -129,6 +129,9 @@
     "nikic/php-parser": {
         "version": "v4.10.4"
     },
+    "openpayu/openpayu": {
+        "version": "2.2.13"
+    },
     "paragonie/constant_time_encoding": {
         "version": "v2.4.0"
     },
