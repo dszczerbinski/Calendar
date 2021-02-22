@@ -96,6 +96,18 @@ class GoogleApiService
         $_SESSION["endEvent"] = $_SESSION["startEvent"];
         $_SESSION["endEvent"][12] = intval($_SESSION["endEvent"][12]) + 1;
 
+        $_SESSION["specmail"]="danielspraktyka3@gmail.com";
+        switch($_SESSION["specialist"]) {
+            case "dr Mariusz Pudzianowski":
+                $_SESSION["specmail"]="danielspraktyka@gmail.com";
+                break;
+            case "dr Adam Małysz":
+                $_SESSION["specmail"]="danielspraktyka2@gmail.com";
+                break;
+            case "dr Jacek Krzynówek":
+                break;
+        }
+
 
         /// PAYU ///
         ///
@@ -157,7 +169,7 @@ Email klienta: ' . $_SESSION["clientemail"],
             ),
             'attendees' => array(
                 array('email' => 'daniels@biznesport.pl'),
-                array('email' => 'danielspraktyka@gmail.com'),
+                array('email' => $_SESSION["specmail"]),
                 array('email' => $_SESSION["clientemail"]),
             ),
             'reminders' => array(

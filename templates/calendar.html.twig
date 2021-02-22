@@ -29,6 +29,9 @@
             option:default {
                 color: #808080;
             }
+            td.fc-day.fc-past {
+                background-color: #EEEEEE;
+            }
         </style>
     {% endblock %}
 
@@ -47,7 +50,6 @@
             var ip={{ ip|json_encode|raw }};
 
             document.addEventListener('DOMContentLoaded', function () {
-
                 if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
                     sessionStorage.removeItem('specialist');
                 } else {
@@ -57,52 +59,53 @@
                 let js_events = {{ events|json_encode|raw }};
                 js_events.forEach(function (js_events) {
                     if (typeof js_events.attendees !== 'undefined') {
-                        if (js_events.attendees[0].email === "danielspraktyka@gmail.com" || js_events.attendees[1].email === "danielspraktyka@gmail.com") {
+                        if (js_events.attendees[0].email === "danielspraktyka@gmail.com" || js_events.attendees[1].email === "danielspraktyka@gmail.com" || js_events.attendees[2].email === "danielspraktyka@gmail.com") {
                             eventsA.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'orange',
                             })
-                        }
-                        ;
-                        if (js_events.attendees[0].email === "danielspraktyka2@gmail.com" || js_events.attendees[1].email === "danielspraktyka2@gmail.com") {
+                        };
+                        if (js_events.attendees[0].email === "danielspraktyka2@gmail.com" || js_events.attendees[1].email === "danielspraktyka2@gmail.com" || js_events.attendees[2].email === "danielspraktyka2@gmail.com") {
                             eventsB.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'green',
                             })
-                        }
-                        ;
-                        if (js_events.attendees[0].email === "danielspraktyka3@gmail.com" || js_events.attendees[1].email === "danielspraktyka3@gmail.com") {
+                        };
+                        if (js_events.attendees[0].email === "danielspraktyka3@gmail.com" || js_events.attendees[1].email === "danielspraktyka3@gmail.com" || js_events.attendees[2].email === "danielspraktyka3@gmail.com") {
                             eventsC.push({
                                 title: js_events.summary,
                                 start: js_events.start.dateTime,
                                 end: js_events.end.dateTime,
                                 color: 'red',
                             })
-                        }
-                        ;
+                        };
                     }
 
                 });
-                if (specialist === 'danielspraktyka@gmail.com') {
-                    events = eventsA;
-                }
-                if (specialist === 'danielspraktyka2@gmail.com') {
-                    events = eventsB;
-                }
-                if (specialist === 'danielspraktyka3@gmail.com') {
-                    events = eventsC;
+                switch(specialist){
+                    case "danielspraktyka@gmail.com":
+                        events = eventsA;
+                        break;
+                    case "danielspraktyka2@gmail.com":
+                        events = eventsB;
+                        break;
+                    case "danielspraktyka3@gmail.com":
+                        events = eventsC;
                 }
 
                 var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                     defaultView: 'dayGridMonth',
                     locale: 'pl',
+                    height: 'auto',
                     editable: false,
+                    themeSystem: 'Lux',
                     firstDay: 1,
+                    fixedWeekCount: false,
                     slotDuration: '01:00',
                     slotMinTime: "10:00:00",
                     slotMaxTime: "18:00:00",
@@ -133,7 +136,8 @@
                     dateClick: function (info) {
                         if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
                             calendar.unselect()
-                            alert("Najpierw wybierz specjalistę do którego chcesz się zarejestrować!")
+                            //alert("Najpierw wybierz specjalistę do którego chcesz się zarejestrować!")
+                            $("#specialistalert").modal();
                         } else {
 
                             clickedDay = info.dateStr;
@@ -168,33 +172,28 @@
                 calendar.render();
                 calendar.unselect()
             });
-            console.log(eventsA);
 
             function changeSpecialist() {
-                // let temp = document.querySelector('#specialist');
-                let temp = document.getElementById("specialist").value;
-                console.log(temp);
-                //document.getElementById("form").submit();
-                if (temp === "SpecjalistaA") {
-                    sessionStorage.setItem("specialist", "danielspraktyka@gmail.com");
-                }
-                if (temp === "SpecjalistaB") {
-                    sessionStorage.setItem("specialist", "danielspraktyka2@gmail.com");
-                }
-                if (temp === "SpecjalistaC") {
-                    sessionStorage.setItem("specialist", "danielspraktyka3@gmail.com");
+                switch(document.getElementById("specialist").value){
+                    case "SpecjalistaA":
+                        sessionStorage.setItem("specialist", "danielspraktyka@gmail.com");
+                        break;
+                    case "SpecjalistaB":
+                        sessionStorage.setItem("specialist", "danielspraktyka2@gmail.com");
+                        break;
+                    case "SpecjalistaC":
+                        sessionStorage.setItem("specialist", "danielspraktyka3@gmail.com");
                 }
 
                 location.reload();
-                $("#calendar").load(" #calendar > *");
             }
 
             //zapamietywanie wyboru specjalisty po refreshu
-            var selectedProduct = sessionStorage.getItem("specialist");
-            if (selectedProduct != undefined || selectedProduct != null) {
-                $(".ProductDetails select").first().find(":selected").removeAttr("selected");
-                $(".ProductDetails select").find("option").each(function () {
-                    if ($(this).val() == selectedProduct) {
+            var selectedSpecialist = sessionStorage.getItem("specialist");
+            if (selectedSpecialist != undefined || selectedSpecialist != null) {
+                $(".SpecialistDetails select").first().find(":selected").removeAttr("selected");
+                $(".SpecialistDetails select").find("option").each(function () {
+                    if ($(this).val() == selectedSpecialist) {
                         $(this).attr("selected", true);
                     }
                 });
@@ -210,7 +209,7 @@
                 } else if (specialist === "danielspraktyka3@gmail.com") {
                     specialistName = "dr Jacek Krzynówek";
                 }
-
+                console.log(specialist);
                 document.getElementById("spec").value = specialistName;
                 document.getElementById("date").value = clickedDay;
             }
@@ -221,7 +220,6 @@
 </head>
 <body>
 {% block body %}
-
     <div class="form">
         <div class="form-group mb-2">
         <form id="form" method="post">
@@ -242,7 +240,14 @@
     <div id="calendar"></div>
 
     {# ///////////////////////       MODAL      //////////////////////////////////// #}
+
+
     <div class="container">
+        <div class="modal-content">
+        <div class="modal fade" id="specialistalert" role="dialog">
+            <div class="alert alert-warning" role="alert">...</div>
+        </div>
+        </div>
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -313,7 +318,6 @@
                         {# <p>Forgot <a href="#">Password?</a></p> #}
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
