@@ -86,16 +86,7 @@
                     }
 
                 });
-                switch(specialist){
-                    case "danielspraktyka@gmail.com":
-                        events = eventsA;
-                        break;
-                    case "danielspraktyka2@gmail.com":
-                        events = eventsB;
-                        break;
-                    case "danielspraktyka3@gmail.com":
-                        events = eventsC;
-                }
+
 
                 var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -155,9 +146,15 @@
                                         busyTimes.push(events.start.slice(11, 16));
                                     }
                                 });
+
+                                Array.from(document.querySelector("#time").options).forEach(function(option_element) {
+                                    if($('#time option').is(':disabled')){
+                                        $('#time option').prop('disabled', false);
+                                    }
+                                });
+
                                 busyTimes.forEach(function (busyTime) {
                                     $('#time option[value="' + busyTime + '"]').prop('disabled', true);
-                                    console.log(busyTime);
                                 });
 
                                 $(document).ready(function () {
@@ -171,48 +168,51 @@
                 });
                 calendar.render();
                 calendar.unselect()
-            });
 
-            function changeSpecialist() {
-                switch(document.getElementById("specialist").value){
-                    case "SpecjalistaA":
-                        sessionStorage.setItem("specialist", "danielspraktyka@gmail.com");
-                        break;
-                    case "SpecjalistaB":
-                        sessionStorage.setItem("specialist", "danielspraktyka2@gmail.com");
-                        break;
-                    case "SpecjalistaC":
-                        sessionStorage.setItem("specialist", "danielspraktyka3@gmail.com");
-                }
-
-                location.reload();
-            }
-
-            //zapamietywanie wyboru specjalisty po refreshu
-            var selectedSpecialist = sessionStorage.getItem("specialist");
-            if (selectedSpecialist != undefined || selectedSpecialist != null) {
-                $(".SpecialistDetails select").first().find(":selected").removeAttr("selected");
-                $(".SpecialistDetails select").find("option").each(function () {
-                    if ($(this).val() == selectedSpecialist) {
-                        $(this).attr("selected", true);
+                document.querySelector('.form-control').addEventListener("change", changeSpecialist);
+                function changeSpecialist() {
+                    switch(document.getElementById("specialist").value){
+                        case "SpecjalistaA":
+                            specialist="danielspraktyka@gmail.com";
+                            break;
+                        case "SpecjalistaB":
+                            specialist="danielspraktyka2@gmail.com";
+                            break;
+                        case "SpecjalistaC":
+                            specialist="danielspraktyka3@gmail.com";
                     }
-                });
-            }
+                    calendar.destroy();
 
-            var specialistName;
+                    switch(specialist){
+                        case "danielspraktyka@gmail.com":
+                            events = eventsA;
+                            break;
+                        case "danielspraktyka2@gmail.com":
+                            events = eventsB;
+                            break;
+                        case "danielspraktyka3@gmail.com":
+                            events = eventsC;
+                    }
 
-            function PlaceholdersModal() {
-                if (specialist === "danielspraktyka@gmail.com") {
-                    specialistName = "dr Mariusz Pudzianowski";
-                } else if (specialist === "danielspraktyka2@gmail.com") {
-                    specialistName = "dr Adam Małysz";
-                } else if (specialist === "danielspraktyka3@gmail.com") {
-                    specialistName = "dr Jacek Krzynówek";
+                    calendar.removeAllEvents();
+                    calendar.addEventSource( events );
+                    calendar.render();
+                    calendar.updateSize();
                 }
-                console.log(specialist);
-                document.getElementById("spec").value = specialistName;
-                document.getElementById("date").value = clickedDay;
-            }
+
+                var specialistName;
+                function PlaceholdersModal() {
+                    if (specialist === "danielspraktyka@gmail.com") {
+                        specialistName = "dr Mariusz Pudzianowski";
+                    } else if (specialist === "danielspraktyka2@gmail.com") {
+                        specialistName = "dr Adam Małysz";
+                    } else if (specialist === "danielspraktyka3@gmail.com") {
+                        specialistName = "dr Jacek Krzynówek";
+                    }
+                    document.getElementById("spec").value = specialistName;
+                    document.getElementById("date").value = clickedDay;
+                }
+            });
         </script>
 
     {% endblock %}
@@ -226,7 +226,7 @@
 
             <label for="specialist">Wybierz specjalistę aby zobaczyć dostępne terminy: </label>
 
-            <select id="specialist" name="specialist" class="form-control" onchange="changeSpecialist()">
+            <select id="specialist" name="specialist" class="form-control">
                 <option selected="default"disabled>Wybierz specjalistę</option>
                 <option value="SpecjalistaA">dr Mariusz Pudzianowski</option>
                 <option value="SpecjalistaB">dr Adam Małysz</option>
