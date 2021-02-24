@@ -146,6 +146,22 @@
                                         busyTimes.push(events.start.slice(11, 16));
                                     }
                                 });
+                                var date = new Date(calendar.getDate());
+                                var hours = date.getHours();
+
+                                for(let i=9; i<=hours; i--){
+                                    if(hours>8){
+                                        if(hours==9){
+                                            busyTimes.push('10:00');
+                                            break;
+                                        }
+                                        else {
+                                            busyTimes.push(hours+1 + ':00');
+                                        }
+
+                                    }
+                                    else break;
+                                }
 
                                 Array.from(document.querySelector("#time").options).forEach(function(option_element) {
                                     if($('#time option').is(':disabled')){
