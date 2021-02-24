@@ -149,14 +149,14 @@
                                 var date = new Date(calendar.getDate());
                                 var hours = date.getHours();
 
-                                for(let i=9; i<=hours; i--){
+                                for(let i=9; i<=hours; i++){
                                     if(hours>8){
                                         if(hours==9){
                                             busyTimes.push('10:00');
                                             break;
                                         }
                                         else {
-                                            busyTimes.push(hours+1 + ':00');
+                                            busyTimes.push(1+i + ':00');
                                         }
 
                                     }
