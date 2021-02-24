@@ -9,7 +9,9 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+              integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+              crossorigin="anonymous">
         <style>
             .modal-header, h4, .close {
                 background-color: #5cb85c;
@@ -29,6 +31,7 @@
             option:default {
                 color: #808080;
             }
+
             td.fc-day.fc-past {
                 background-color: #EEEEEE;
             }
@@ -41,13 +44,15 @@
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.4.2/main.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+                crossorigin="anonymous"></script>
         <script>
 
             var events = [], eventsA = [], eventsB = [], eventsC = [], busyTimes = [];
             var dayClicked = false;
             var specialist, clickedDay;
-            var ip={{ ip|json_encode|raw }};
+            var ip ={{ ip|json_encode|raw }};
 
             document.addEventListener('DOMContentLoaded', function () {
                 if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
@@ -137,8 +142,7 @@
 
                             if (clickedDayDate.getDate() < currDate) {
                                 alert("Nie możesz wybrać przeszłej daty!")
-                            }
-                            else if (clickedDayDate.getDay() == 6 || clickedDayDate.getDay() == 0) alert('Gabinet nieczynny w weekend!');
+                            } else if (clickedDayDate.getDay() == 6 || clickedDayDate.getDay() == 0) alert('Gabinet nieczynny w weekend!');
 
                             else {
                                 events.forEach(function (events) {
@@ -149,22 +153,21 @@
                                 var date = new Date(calendar.getDate());
                                 var hours = date.getHours();
 
-                                for(let i=9; i<=hours; i++){
-                                    if(hours>8){
-                                        if(hours==9){
-                                            busyTimes.push('10:00');
-                                            break;
-                                        }
-                                        else {
-                                            busyTimes.push(1+i + ':00');
-                                        }
-
-                                    }
-                                    else break;
+                                for (let i = 9; i <= hours; i++) {
+                                    if (clickedDayDate.getDate() == currDate) {
+                                        if (hours > 8) {
+                                            if (hours == 9) {
+                                                busyTimes.push('10:00');
+                                                break;
+                                            } else {
+                                                busyTimes.push(1 + i + ':00');
+                                            }
+                                        } else break;
+                                    } else break;
                                 }
 
-                                Array.from(document.querySelector("#time").options).forEach(function(option_element) {
-                                    if($('#time option').is(':disabled')){
+                                Array.from(document.querySelector("#time").options).forEach(function (option_element) {
+                                    if ($('#time option').is(':disabled')) {
                                         $('#time option').prop('disabled', false);
                                     }
                                 });
@@ -186,20 +189,21 @@
                 calendar.unselect()
 
                 document.querySelector('.form-control').addEventListener("change", changeSpecialist);
+
                 function changeSpecialist() {
-                    switch(document.getElementById("specialist").value){
+                    switch (document.getElementById("specialist").value) {
                         case "SpecjalistaA":
-                            specialist="danielspraktyka@gmail.com";
+                            specialist = "danielspraktyka@gmail.com";
                             break;
                         case "SpecjalistaB":
-                            specialist="danielspraktyka2@gmail.com";
+                            specialist = "danielspraktyka2@gmail.com";
                             break;
                         case "SpecjalistaC":
-                            specialist="danielspraktyka3@gmail.com";
+                            specialist = "danielspraktyka3@gmail.com";
                     }
                     calendar.destroy();
 
-                    switch(specialist){
+                    switch (specialist) {
                         case "danielspraktyka@gmail.com":
                             events = eventsA;
                             break;
@@ -211,12 +215,13 @@
                     }
 
                     calendar.removeAllEvents();
-                    calendar.addEventSource( events );
+                    calendar.addEventSource(events);
                     calendar.render();
                     calendar.updateSize();
                 }
 
                 var specialistName;
+
                 function PlaceholdersModal() {
                     if (specialist === "danielspraktyka@gmail.com") {
                         specialistName = "dr Mariusz Pudzianowski";
@@ -238,18 +243,18 @@
 {% block body %}
     <div class="form">
         <div class="form-group mb-2">
-        <form id="form" method="post">
+            <form id="form" method="post">
 
-            <label for="specialist">Wybierz specjalistę aby zobaczyć dostępne terminy: </label>
+                <label for="specialist">Wybierz specjalistę aby zobaczyć dostępne terminy: </label>
 
-            <select id="specialist" name="specialist" class="form-control">
-                <option selected="default"disabled>Wybierz specjalistę</option>
-                <option value="SpecjalistaA">dr Mariusz Pudzianowski</option>
-                <option value="SpecjalistaB">dr Adam Małysz</option>
-                <option value="SpecjalistaC">dr Jacek Krzynówek</option>
-            </select>
+                <select id="specialist" name="specialist" class="form-control">
+                    <option selected="default" disabled>Wybierz specjalistę</option>
+                    <option value="SpecjalistaA">dr Mariusz Pudzianowski</option>
+                    <option value="SpecjalistaB">dr Adam Małysz</option>
+                    <option value="SpecjalistaC">dr Jacek Krzynówek</option>
+                </select>
 
-        </form>
+            </form>
         </div>
     </div>
 
@@ -260,9 +265,9 @@
 
     <div class="container">
         <div class="modal-content">
-        <div class="modal fade" id="specialistalert" role="dialog">
-            <div class="alert alert-warning" role="alert">...</div>
-        </div>
+            <div class="modal fade" id="specialistalert" role="dialog">
+                <div class="alert alert-warning" role="alert">...</div>
+            </div>
         </div>
 
         <!-- Modal -->
@@ -323,7 +328,11 @@
                                        pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu'
                                        required>
                             </div>
-                            <center><button type="submit" name="register" style="border: 0px; height: 50px; width: 290px; right: 50px; background: url('http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png'); cursor: pointer;"></button></center></form>
+                            <center>
+                                <button type="submit" name="register"
+                                        style="border: 0px; height: 50px; width: 290px; right: 50px; background: url('http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png'); cursor: pointer;"></button>
+                            </center>
+                        </form>
                         </form>
                     </div>
                     <div class="modal-footer">
