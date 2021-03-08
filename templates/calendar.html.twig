@@ -139,8 +139,10 @@
                         } else {
                             clickedDay = info.dateStr;
                             let clickedDayDate = new Date(clickedDay);
+                            console.log(clickedDayDate.getDate());
+                            console.log(currDate.getDate());
 
-                            if (clickedDayDate.getTime() < currDate) {
+                            if (clickedDayDate.getTime()+86399999 < currDate.getTime()) {
                                 alert("Nie możesz wybrać przeszłej daty!")
                             } else if (clickedDayDate.getDay() == 6 || clickedDayDate.getDay() == 0) alert('Gabinet nieczynny w weekend!');
 
@@ -154,7 +156,7 @@
                                 var hours = date.getHours();
 
                                 for (let i = 9; i <= hours; i++) {
-                                    if (clickedDayDate.getDate() == currDate) {
+                                    if (clickedDayDate.getDate() == currDate.getDate()) {
                                         if (hours > 8) {
                                             if (hours == 9) {
                                                 busyTimes.push('10:00');
@@ -165,13 +167,13 @@
                                         } else break;
                                     } else break;
                                 }
+                                console.log(busyTimes);
 
                                 Array.from(document.querySelector("#time").options).forEach(function (option_element) {
                                     if ($('#time option').is(':disabled')) {
-                                        if ($('#time option')[0].innerHTML !== "Wybierz godzine") {
-                                            $('#time option').prop('disabled', false);
-                                        }
+                                        $('#time option').prop('disabled', false);
                                     }
+                                    $('#time option[value="default"]').prop('disabled', true);
                                 });
 
                                 busyTimes.forEach(function (busyTime) {
@@ -187,8 +189,9 @@
                         }
                     }
                 });
-                const currDate = calendar.getDate().getTime();
+                const currDate = calendar.getDate();
                 calendar.render();
+                calendar.updateSize()
                 calendar.unselect()
 
                 document.querySelector('.form-control').addEventListener("change", changeSpecialist);
@@ -290,7 +293,7 @@
                             <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
                             {# <input type="text" class="form-control" id="time" placeholder="Godzina"> #}
                             <select id="time" name="time" class="form-control" required>
-                                <option selected="default" disabled>Wybierz godzine</option>
+                                <option value="default" selected="default" disabled>Wybierz godzine</option>
                                 <option id="10" value="10:00">10:00-11:00</option>
                                 <option id="11" value="11:00">11:00-12:00</option>
                                 <option id="12" value="12:00">12:00-13:00</option>
