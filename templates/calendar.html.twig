@@ -71,7 +71,8 @@
                                 end: js_events.end.dateTime,
                                 color: 'orange',
                             })
-                        };
+                        }
+                        ;
                         if (js_events.attendees[0].email === "danielspraktyka2@gmail.com" || js_events.attendees[1].email === "danielspraktyka2@gmail.com" || js_events.attendees[2].email === "danielspraktyka2@gmail.com") {
                             eventsB.push({
                                 title: js_events.summary,
@@ -79,7 +80,8 @@
                                 end: js_events.end.dateTime,
                                 color: 'green',
                             })
-                        };
+                        }
+                        ;
                         if (js_events.attendees[0].email === "danielspraktyka3@gmail.com" || js_events.attendees[1].email === "danielspraktyka3@gmail.com" || js_events.attendees[2].email === "danielspraktyka3@gmail.com") {
                             eventsC.push({
                                 title: js_events.summary,
@@ -87,7 +89,8 @@
                                 end: js_events.end.dateTime,
                                 color: 'red',
                             })
-                        };
+                        }
+                        ;
                     }
 
                 });
@@ -132,15 +135,12 @@
                     dateClick: function (info) {
                         if (document.getElementById("specialist").value === 'Wybierz specjalistę') {
                             calendar.unselect()
-                            //alert("Najpierw wybierz specjalistę do którego chcesz się zarejestrować!")
-                            $("#specialistalert").modal();
+                            alert("Najpierw wybierz specjalistę do którego chcesz się zarejestrować!")
                         } else {
-
                             clickedDay = info.dateStr;
                             let clickedDayDate = new Date(clickedDay);
-                            let currDate = calendar.getDate().getDate();
 
-                            if (clickedDayDate.getDate() < currDate) {
+                            if (clickedDayDate.getTime() < currDate) {
                                 alert("Nie możesz wybrać przeszłej daty!")
                             } else if (clickedDayDate.getDay() == 6 || clickedDayDate.getDay() == 0) alert('Gabinet nieczynny w weekend!');
 
@@ -168,7 +168,9 @@
 
                                 Array.from(document.querySelector("#time").options).forEach(function (option_element) {
                                     if ($('#time option').is(':disabled')) {
-                                        $('#time option').prop('disabled', false);
+                                        if ($('#time option')[0].innerHTML !== "Wybierz godzine") {
+                                            $('#time option').prop('disabled', false);
+                                        }
                                     }
                                 });
 
@@ -185,6 +187,7 @@
                         }
                     }
                 });
+                const currDate = calendar.getDate().getTime();
                 calendar.render();
                 calendar.unselect()
 
@@ -261,90 +264,82 @@
     <div id="calendar"></div>
 
     {# ///////////////////////       MODAL      //////////////////////////////////// #}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
 
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="padding:35px 50px;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4><span class="glyphicon glyphicon-ok"></span> <b>Zarejestruj wizytę</b></h4>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                    <form role="form" method="post">
+                        <div class="form-group">
+                            <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany
+                                specjalista</label>
+                            <input type="text" name="specialist" class="form-control" id="spec" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana
+                                data</label>
+                            <input type="text" name="date" class="form-control" id="date" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
+                            {# <input type="text" class="form-control" id="time" placeholder="Godzina"> #}
+                            <select id="time" name="time" class="form-control" required>
+                                <option selected="default" disabled>Wybierz godzine</option>
+                                <option id="10" value="10:00">10:00-11:00</option>
+                                <option id="11" value="11:00">11:00-12:00</option>
+                                <option id="12" value="12:00">12:00-13:00</option>
+                                <option id="13" value="13:00">13:00-14:00</option>
+                                <option id="14" value="14:00">14:00-15:00</option>
+                                <option id="15" value="15:00">15:00-16:00</option>
+                                <option id="16" value="16:00">16:00-17:00</option>
+                                <option id="17" value="17:00">17:00-18:00</option>
+                            </select>
+                        </div>
 
-    <div class="container">
-        <div class="modal-content">
-            <div class="modal fade" id="specialistalert" role="dialog">
-                <div class="alert alert-warning" role="alert">...</div>
-            </div>
-        </div>
+                        <center><h3>Dane do rejestracji</h3></center>
 
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
+                        <div class="form-group">
+                            <label for="spec"><span class="glyphicon glyphicon-user"></span> Imię i nazwisko</label>
+                            <input type="text" name="nameSurname" class="form-control" id="spec"
+                                   placeholder='Wpisz imię i nazwisko' required>
+                        </div>
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header" style="padding:35px 50px;">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4><span class="glyphicon glyphicon-ok"></span> <b>Zarejestruj wizytę</b></h4>
-                    </div>
-                    <div class="modal-body" style="padding:40px 50px;">
-                        <form role="form" method="post">
-                            <div class="form-group">
-                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Wybrany
-                                    specjalista</label>
-                                <input type="text" name="specialist" class="form-control" id="spec" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="date"><span class="glyphicon glyphicon-calendar"></span> Wybrana
-                                    data</label>
-                                <input type="text" name="date" class="form-control" id="date" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="time"><span class="glyphicon glyphicon-time"></span> Wybierz godzine</label>
-                                {# <input type="text" class="form-control" id="time" placeholder="Godzina"> #}
-                                <select id="time" name="time" class="form-control" required>
-                                    <option selected="default" disabled>Wybierz godzine</option>
-                                    <option id="10" value="10:00">10:00-11:00</option>
-                                    <option id="11" value="11:00">11:00-12:00</option>
-                                    <option id="12" value="12:00">12:00-13:00</option>
-                                    <option id="13" value="13:00">13:00-14:00</option>
-                                    <option id="14" value="14:00">14:00-15:00</option>
-                                    <option id="15" value="15:00">15:00-16:00</option>
-                                    <option id="16" value="16:00">16:00-17:00</option>
-                                    <option id="17" value="17:00">17:00-18:00</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="spec"><span class="glyphicon glyphicon-paperclip"></span> Email</label>
+                            <input type="text" name="clientemail" class="form-control" id="spec"
+                                   placeholder='Wpisz email' required>
+                        </div>
 
-                            <center><h3>Dane do rejestracji</h3></center>
-
-                            <div class="form-group">
-                                <label for="spec"><span class="glyphicon glyphicon-user"></span> Imię i nazwisko</label>
-                                <input type="text" name="nameSurname" class="form-control" id="spec"
-                                       placeholder='Wpisz imię i nazwisko' required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="spec"><span class="glyphicon glyphicon-paperclip"></span> Email</label>
-                                <input type="text" name="clientemail" class="form-control" id="spec"
-                                       placeholder='Wpisz email' required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="spec"><span class="glyphicon glyphicon-earphone"></span> Telefon kontaktowy</label>
-                                <input type="tel" max="9" name="phoneNumber" class="form-control" id="spec"
-                                       pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu'
-                                       required>
-                            </div>
-                            <center>
-                                <button type="submit" name="register"
-                                        style="border: 0px; height: 50px; width: 290px; right: 50px; background: url('http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png'); cursor: pointer;"></button>
-                            </center>
-                        </form>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
-                                    class="glyphicon glyphicon-remove"></span> Anuluj
-                        </button>
-                        {# <p>Not a member? <a href="#">Sign Up</a></p> #}
-                        {# <p>Forgot <a href="#">Password?</a></p> #}
-                    </div>
+                        <div class="form-group">
+                            <label for="spec"><span class="glyphicon glyphicon-earphone"></span> Telefon
+                                kontaktowy</label>
+                            <input type="tel" max="9" name="phoneNumber" class="form-control" id="spec"
+                                   pattern="[0-9]{3}[0-9]{3}[0-9]{3}" placeholder='Wpisz telefon do kontaktu'
+                                   required>
+                        </div>
+                        <center>
+                            <button type="submit" name="register"
+                                    style="border: 0px; height: 50px; width: 290px; right: 50px; background: url('http://static.payu.com/pl/standard/partners/buttons/payu_account_button_long_03.png'); cursor: pointer;"></button>
+                        </center>
+                    </form>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span
+                                class="glyphicon glyphicon-remove"></span> Anuluj
+                    </button>
+                    {# <p>Not a member? <a href="#">Sign Up</a></p> #}
+                    {# <p>Forgot <a href="#">Password?</a></p> #}
                 </div>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}
 </body>
