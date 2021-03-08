@@ -13,7 +13,15 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+     <li>
+      <a href="#site">Site</a>
+      <ul>
+        <li><a href="#main-page">Main Page</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#register-form">Register form</a></li>
+      </ul>
+    </li>
+    <!-- <li><a href="#usage">Usage</a></li> -->
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -46,10 +54,10 @@ Events shows after chose specialist from dropdown menu
 ### Register form
 ![App Register Form Screenshot](images/registerform.png)
 
-<!-- USAGE EXAMPLES -->
+<!-- USAGE EXAMPLES 
 ## Usage
 
-...
+... -->
 
 
 <!-- CONTACT -->
