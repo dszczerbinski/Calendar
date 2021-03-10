@@ -34,7 +34,7 @@
 A calendar using PayU and Google Calendar API to display and creating events. Its a website module to booking terms to specialist like psychoterapist. All events are connected and sync with host Google Calendar
 
 ### Demo
-Here is a working live demo: ![https://kalendarz.biznesport.com.pl](https://kalendarz.biznesport.com.pl)
+Here is a working live demo: [https://kalendarz.biznesport.com.pl](https://kalendarz.biznesport.com.pl)
 
 ### Built With
 * [Bootstrap 3.4.1](https://getbootstrap.com)
