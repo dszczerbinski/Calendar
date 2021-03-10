@@ -31,7 +31,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A calendar using PayU and Google Calendar API to display and creating events. Its a website module to booking terms to specialist like psychoterapist. All events are connected and sync with host Google Calendar
+A calendar using PayU and Google Calendar API to display and creating events. Its a website module to booking terms to specialist like psychoterapist. All events are connected and sync with Google Calendar
 
 ### Demo
 Here is a working live demo: [https://kalendarz.biznesport.com.pl](https://kalendarz.biznesport.com.pl)
